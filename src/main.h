@@ -40,6 +40,14 @@ class CValidationInterface;
 class CValidationState;
 
 struct CNodeStateStats;
+// Static Proof-of-Stake Reward
+static const CAmount SUPER_BLOCK_REWARD = COIN * 700000;
+// Static Proof-of-Stake Reward
+static const CAmount STATIC_POS_REWARD = COIN * .07;
+// Static Proof-of-Work Reward
+static const CAmount STATIC_POW_REWARD = COIN * 1.84;
+// Static Masternode Reward Percent
+static const double STATIC_MASTERNODE_REWARD_PERCENT = 0.2;
 
 /** Default for accepting alerts from the P2P network. */
 static const bool DEFAULT_ALERTS = true;
@@ -244,7 +252,7 @@ bool GetTransaction(const uint256 &hash, CTransaction &tx, const Consensus::Para
 /** Find the best known block, and make it the tip of the block chain */
 bool ActivateBestChain(CValidationState& state, const CChainParams& chainparams, const CBlock* pblock = NULL);
 int64_t GetTotalCoinEstimate(int nHeight);
-CAmount GetBlockSubsidy(int nBits, int nHeight, const Consensus::Params& consensusParams);
+CAmount GetBlockSubsidy(int nPrevHeight);
 
 // ***TODO***
 double ConvertBitsToDouble(unsigned int nBits);
