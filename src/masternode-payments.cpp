@@ -312,7 +312,7 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, CAmount nFe
         }
     }
 
-    CAmount blockValue = nFees + GetBlockSubsidy(chainActive.Tip()->nBits, chainActive.Tip()->nHeight, Params().GetConsensus());
+    CAmount blockValue = nFees + GetBlockSubsidy(chainActive.Tip()->nHeight);
     CAmount masternodePayment = GetMasternodePayment(chainActive.Tip()->nHeight+1, blockValue);
 
     txNew.vout[0].nValue = blockValue;

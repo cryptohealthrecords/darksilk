@@ -446,7 +446,7 @@ void CBudgetManager::FillBlockPayee(CMutableTransaction& txNew, CAmount nFees)
     }
 
     //miners get the full amount on these blocks
-    txNew.vout[0].nValue = nFees + GetBlockSubsidy(chainActive.Tip()->nBits, chainActive.Tip()->nHeight, Params().GetConsensus());
+    txNew.vout[0].nValue = nFees + GetBlockSubsidy(chainActive.Tip()->nHeight);
 
     if(nHighestCount > 0){
         txNew.vout.resize(2);
