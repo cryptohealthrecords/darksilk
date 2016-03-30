@@ -1480,7 +1480,7 @@ int64_t GetTotalCoinEstimate(int nHeight)
 
 CAmount GetBlockSubsidy(int nPrevHeight)
 {
-    if(nPrevHeight = 0)
+    if(nPrevHeight == 0)
         return SUPER_BLOCK_REWARD;
     else
         return STATIC_POS_REWARD;
