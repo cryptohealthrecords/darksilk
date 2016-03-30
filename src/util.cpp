@@ -526,7 +526,7 @@ boost::filesystem::path GetDefaultDataDir()
     // Unix: ~/.dash
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "Dash";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "PoS-Dash";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -538,10 +538,10 @@ boost::filesystem::path GetDefaultDataDir()
     // Mac
     pathRet /= "Library/Application Support";
     TryCreateDirectory(pathRet);
-    return pathRet / "Dash";
+    return pathRet / "PoS-Dash";
 #else
     // Unix
-    return pathRet / ".dash";
+    return pathRet / ".pos-dash";
 #endif
 #endif
 }
