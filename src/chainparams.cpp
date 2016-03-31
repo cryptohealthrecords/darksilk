@@ -26,10 +26,12 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
     CMutableTransaction txNew;
     txNew.nVersion = 1;
     txNew.vin.resize(1);
-    txNew.vout.resize(1);
-    txNew.vin[0].scriptSig = CScript() << 486604799 << CScriptNum(4) << std::vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
-    txNew.vout[0].nValue = genesisReward;
-    txNew.vout[0].scriptPubKey = genesisOutputScript;
+    txNew.nTime = nTime;
+    txNew.vin[0].scriptSig = CScript() << 0 << 42 << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
+    std::vector<CTxOut> vout;
+    vout.resize(1);
+    vout[0].SetEmpty();
+    txNew.vout = vout;
 
     CBlock genesis;
     genesis.nTime    = nTime;
@@ -55,7 +57,7 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "BT, currency for people (and robots...and animals, maybe";
+    const char* pszTimestamp = "2015 DarkSilk is Born";
     const CScript genesisOutputScript = CScript() << ParseHex("040184710fa689ad5023690c80f3a49c8f13f8d45b8c857fbcbc8bc4a8e4d3eb4b10f4d4604fa08dce601aaf0f470216fe1b51850b4acf21b179c45070ac7b03a9") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
@@ -87,9 +89,9 @@ public:
         consensus.nMajorityEnforceBlockUpgrade = 750;
         consensus.nMajorityRejectBlockOutdated = 950;
         consensus.nMajorityWindow = 1000;
-        consensus.BIP34Height = 227931;
+        consensus.BIP34Height = 35;
         consensus.BIP34Hash = uint256S("0x000000000000024b89b42a942fe0d9fea3bb44ab7bd1b19115dd6a759c0808b8");
-        consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
+        consensus.powLimit = uint256S("eee00fffff000000000000000000000000000000000000000000000000000000");
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Dash: 2.5 minutes
         consensus.fPowAllowMinDifficultyBlocks = false;
@@ -99,25 +101,24 @@ public:
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
          * a large 32-bit integer with any alignment.
          */
-        pchMessageStart[0] = 0xb1;
-        pchMessageStart[1] = 0xb5;
-        pchMessageStart[2] = 0xa2;
-        pchMessageStart[3] = 0xa4;
+        pchMessageStart[0] = 0x1f;
+        pchMessageStart[1] = 0x22;
+        pchMessageStart[2] = 0x05;
+        pchMessageStart[3] = 0x31;
         vAlertPubKey = ParseHex("");
         nDefaultPort = 39600;
         nMaxTipAge = 6 * 60 * 60; // ~144 blocks behind -> 2 x fork detection time, was 24 * 60 * 60 in bitcoin
         nPruneAfterHeight = 100000;
 
-        genesis = CreateGenesisBlock(1459318820, 11351135, 0x0f0efff0, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1459318820, 763220, 0x1e0ffff0, 1, 1.25 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        printf("Gensis Hash: %s\n", genesis.GetHash().ToString().c_str());
-        printf("Gensis Hash Merkle: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        printf("Gensis nTime: %u\n", genesis.nTime);
-        printf("Gensis nBits: %08x\n", genesis.nBits);
-        printf("Gensis Nonce: %u\n\n\n", genesis.nNonce);
-        assert(consensus.hashGenesisBlock == uint256S("0x9f127fb57c42b8e1b4a2e1c0d5a06d705d20ac8690793de926fbc4d970122d40"));
-        assert(genesis.hashMerkleRoot == uint256S("0x9d32e58efe22f729265c8d0e6fe858b2ab00c89d1a11d0196fade5af875a6b67"));
-
+        //printf("Gensis Hash: %s\n", genesis.GetHash().ToString().c_str());
+        //printf("Gensis Hash Merkle: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        //printf("Gensis nTime: %u\n", genesis.nTime);
+        //printf("Gensis nBits: %08x\n", genesis.nBits);
+        //printf("Gensis Nonce: %u\n\n\n", genesis.nNonce);
+        assert(consensus.hashGenesisBlock == uint256S("0x15fc981e10ee63665b0b56c6b959fa412298073ef30f07cad5631c09b6fa6f51"));
+        assert(genesis.hashMerkleRoot == uint256S("0x8b612f272d7b16d47a4e97cec7b58762585eaebc9f6d42de12c84357807c53ef"));
 
         vSeeds.push_back(CDNSSeedData("pos-dash.com", "dnsseed.pos-dash.com"));
 
