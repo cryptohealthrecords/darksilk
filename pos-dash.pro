@@ -300,7 +300,6 @@ contains(RELEASE, 1) {
 system($$QMAKE_LRELEASE -silent $$_PRO_FILE_)
 
 RESOURCES += \
-    src/qt/btx.qrc \
     src/qt/dash_locale.qrc \
     src/qt/dash.qrc
 
