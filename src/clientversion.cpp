@@ -97,7 +97,6 @@ std::string FormatFullVersion()
 std::string FormatSubVersion(const std::string& name, int nClientVersion, const std::vector<std::string>& comments)
 {
     std::ostringstream ss;
-    ss << "/";
     ss << name << ":" << FormatVersion(nClientVersion);
     if (!comments.empty())
     {
@@ -107,6 +106,5 @@ std::string FormatSubVersion(const std::string& name, int nClientVersion, const 
             ss << "; " << *it;
         ss << ")";
     }
-    ss << "/";
     return ss.str();
 }
