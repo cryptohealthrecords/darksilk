@@ -410,9 +410,9 @@ void static PoWMiner(const CChainParams& chainparams)
         // only mine when connected to at least one peer
         // and the chain is fully downloaded.
         LogPrintf("PoWMiner: No Nodes Loop\n");
-        while (vNodes.empty())
+        while (chainparams.MiningRequiresPeers() && vNodes.empty())
         {
-            LogPrintf("PoWMiner: Loop No Peers 1\n");
+            LogPrintf("PoWMiner: Loop No Peers\n");
             MilliSleep(1000);
         }
         //
