@@ -41,11 +41,11 @@ class CValidationState;
 
 struct CNodeStateStats;
 // Static Proof-of-Stake Reward
-static const CAmount SUPER_BLOCK_REWARD = COIN * 700000;
+static const CAmount SUPER_BLOCK_REWARD = COIN * 400000;
 // Static Proof-of-Stake Reward
-static const CAmount STATIC_POS_REWARD = COIN * .07;
+static const CAmount STATIC_POS_REWARD = COIN * .01;
 // Static Proof-of-Work Reward
-static const CAmount STATIC_POW_REWARD = COIN * 1.84;
+static const CAmount STATIC_POW_REWARD = COIN * 1.25;
 // Static Masternode Reward Percent
 static const double STATIC_MASTERNODE_REWARD_PERCENT = 0.2;
 

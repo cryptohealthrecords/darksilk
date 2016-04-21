@@ -255,10 +255,10 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
     if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(params.powLimit))
         return error("CheckProofOfWork(): nBits below minimum work");
 
-    //TODO (Amir): Add this check back.
+    // TODO (AA): put these line back.
     // Check proof of work matches claimed amount
     //if (UintToArith256(hash) > bnTarget)
-    //    return error("CheckProofOfWork(): hash doesn't match nBits");
+    //   return error("CheckProofOfWork(): hash doesn't match nBits");
 
     return true;
 }

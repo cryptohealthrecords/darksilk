@@ -204,7 +204,8 @@ template unsigned int base_uint<256>::bits() const;
 arith_uint256& arith_uint256::SetCompact(uint32_t nCompact, bool* pfNegative, bool* pfOverflow)
 {
     int nSize = nCompact >> 24;
-    uint32_t nWord = nCompact & 0x007fffff;
+    //TODO (AA): Lower to 0x007fffff
+    uint32_t nWord = nCompact & 0xffffffff;
     if (nSize <= 3) {
         nWord >>= 8 * (3 - nSize);
         *this = nWord;

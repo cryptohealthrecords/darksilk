@@ -10,6 +10,7 @@
 #include "tinyformat.h"
 #include "util.h"
 #include "utilstrencodings.h"
+#include "arith_uint256.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -79,21 +80,22 @@ public:
     CMainParams() {
         strNetworkID = "main";
         consensus.nSubsidyHalvingInterval = 210240;
-        consensus.nMasternodePaymentsStartBlock = 35; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
+        consensus.nMasternodePaymentsStartBlock = 55000; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
         consensus.nMasternodePaymentsIncreaseBlock = 158000;
         consensus.nMasternodePaymentsIncreasePeriod = 576*30;
-        consensus.nBudgetPaymentsStartBlock = 35;
+        consensus.nBudgetPaymentsStartBlock = 55000;
         consensus.nBudgetPaymentsCycleBlocks = 16616;
         consensus.nBudgetPaymentsWindowBlocks = 100;
         consensus.nBudgetProposalEstablishingTime = 60*60*24;
         consensus.nMajorityEnforceBlockUpgrade = 750;
         consensus.nMajorityRejectBlockOutdated = 950;
         consensus.nMajorityWindow = 1000;
-        consensus.BIP34Height = 35;
-        consensus.BIP34Hash = uint256S("0x000000000000024b89b42a942fe0d9fea3bb44ab7bd1b19115dd6a759c0808b8");
-        consensus.powLimit = uint256S("eee00fffff000000000000000000000000000000000000000000000000000000");
-        consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
-        consensus.nPowTargetSpacing = 2.5 * 60; // Dash: 2.5 minutes
+        consensus.BIP34Height = 1;
+        consensus.BIP34Hash = uint256S("0x970c981e10ee63665b0b56c6b959fa412298073ef30f07cad5631c09b6fa6f51");
+        consensus.powLimit = uint256S("16000fffff000000000000000000000000000000000000000000000000000000");
+        consensus.nPowTargetTimespan = 10 * 60 * 60; // Darksilk: 10 minutes
+        consensus.nPowTargetSpacing = 97; // Darksilk: 97 seconds.
+        consensus.nPoSTargetSpacing = 60; // Darksilk: 60 seconds.
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         /** 
@@ -101,32 +103,67 @@ public:
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
          * a large 32-bit integer with any alignment.
          */
+        //Darksilk magic numbers.
         pchMessageStart[0] = 0x1f;
         pchMessageStart[1] = 0x22;
         pchMessageStart[2] = 0x05;
         pchMessageStart[3] = 0x31;
-        vAlertPubKey = ParseHex("");
+        vAlertPubKey = ParseHex("");  //TODO (AA): need alert public key
         nDefaultPort = 39600;
         nMaxTipAge = 6 * 60 * 60; // ~144 blocks behind -> 2 x fork detection time, was 24 * 60 * 60 in bitcoin
         nPruneAfterHeight = 100000;
 
-        genesis = CreateGenesisBlock(1459318820, 763220, 0x1e0ffff0, 1, 1.25 * COIN);
+        //TODO (AA): need a better genesis block hash.  Hash needs to less than bnTarget.SetCompact(genesis.nBits);
+        genesis = CreateGenesisBlock(1459541000, 763220, 0x1e0ffff0, 1, 1.25 * COIN);
+        // This will figure out a valid hash and Nonce if you're
+        // creating a different genesis block:
+        /*
+        arith_uint256 bnTarget;
+        bnTarget.SetCompact(genesis.nBits);
+        uint256 thash;
+
+        CBlock block;
+
+        while(true)
+        {
+            thash = genesis.GetHash();
+            if (UintToArith256(thash) <= bnTarget)
+                break;
+            if ((genesis.nNonce & 0xFFF) == 0)
+            {
+                printf("nonce %08X: hash = %s (target = %s)\n", genesis.nNonce, thash.ToString().c_str(), bnTarget.ToString().c_str());
+            }
+            ++block.nNonce;
+            if (block.nNonce == 0)
+            {
+                printf("NONCE WRAPPED, incrementing time\n");
+                ++block.nTime;
+            }
+        }
+        printf("block.nTime = %u \n", block.nTime);
+        printf("block.nBits = %08x\n", block.nBits);
+        printf("block.nNonce = %u \n", block.nNonce);
+        printf("block.GetHash = %s\n", block.GetHash().ToString().c_str());
+        */
+
+        printf("Gensis Hash: %s\n", genesis.GetHash().ToString().c_str());
+        printf("Gensis Hash Merkle: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        printf("Gensis nTime: %u\n", genesis.nTime);
+        printf("Gensis nBits: %08x\n", genesis.nBits);
+        printf("Gensis Nonce: %u\n\n\n", genesis.nNonce);
+
         consensus.hashGenesisBlock = genesis.GetHash();
-        //printf("Gensis Hash: %s\n", genesis.GetHash().ToString().c_str());
-        //printf("Gensis Hash Merkle: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        //printf("Gensis nTime: %u\n", genesis.nTime);
-        //printf("Gensis nBits: %08x\n", genesis.nBits);
-        //printf("Gensis Nonce: %u\n\n\n", genesis.nNonce);
-        assert(consensus.hashGenesisBlock == uint256S("0x15fc981e10ee63665b0b56c6b959fa412298073ef30f07cad5631c09b6fa6f51"));
-        assert(genesis.hashMerkleRoot == uint256S("0x8b612f272d7b16d47a4e97cec7b58762585eaebc9f6d42de12c84357807c53ef"));
+        assert(consensus.hashGenesisBlock == uint256S("0x96250e7ec325617ae37b9a3823282370e1c15b8e7377ad337ce5c0c4ef35f4cf"));
+        assert(genesis.hashMerkleRoot == uint256S("0x26207c17a4cb0736bb990e2f703ffb3fabfd5455091105ea8f4e8969ea25df47"));
 
-        vSeeds.push_back(CDNSSeedData("pos-dash.com", "dnsseed.pos-dash.com"));
+        //TODO (AA): needs DSN seed nodes.
+        vSeeds.push_back(CDNSSeedData("darksilk.org", "ds1.darksilk.org"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = list_of(35);
-        base58Prefixes[SCRIPT_ADDRESS] = list_of(85);
-        base58Prefixes[SECRET_KEY] =     list_of(153);
-        base58Prefixes[EXT_PUBLIC_KEY] = list_of(0x04)(0x88)(0xB2)(0x1E);
-        base58Prefixes[EXT_SECRET_KEY] = list_of(0x04)(0x88)(0xAD)(0xE4);      // BTX BIP44 coin type is '5'
+        base58Prefixes[PUBKEY_ADDRESS] = boost::assign::list_of(30);                     //DarkSilk addresses start with 'D'
+        base58Prefixes[SCRIPT_ADDRESS] = boost::assign::list_of(10);                     //DarkSilk script addresses start with '5'
+        base58Prefixes[SECRET_KEY] =     boost::assign::list_of(140);                    //DarkSilk private keys start with 'y'
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x02)(0xFE)(0x52)(0x7D); //DarkSilk BIP32 pubkeys start with 'drks'
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x02)(0xFE)(0x52)(0x8C); //DarkSilk BIP32 prvkeys start with 'drky'
         // Dash BIP44 coin type is '5'
         base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x80000005);
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
@@ -138,17 +175,17 @@ public:
         fTestnetToBeDeprecatedFieldRPC = false;
 
         nPoolMaxTransactions = 3;
-        strSporkKey = "";
-        strMasternodePaymentsPubKey = "";
-        strDarksendPoolDummyAddress = "";
+        strSporkKey = ""; //TODO (AA): needs spork public key
+        strMasternodePaymentsPubKey = ""; //TODO (AA): needs masternode payment public key
+        strDarksendPoolDummyAddress = ""; //TODO (AA): needs darksend payment public key
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
-            (  0, uint256S("0x0000000")),
+            (  0, uint256S("0x15fc981e10ee63665b0b56c6b959fa412298073ef30f07cad5631c09b6fa6f51")),
             1459318820, // * UNIX timestamp of last checkpoint block
-            0,     // * total number of transactions between genesis and last checkpoint
-                        //   (the tx=... number in the SetBestChain debug.log lines)
-            2800        // * estimated number of transactions per day after checkpoint
+            0,          // * total number of transactions between genesis and last checkpoint
+            2800        //   (the tx=... number in the SetBestChain debug.log lines)
+                        // * estimated number of transactions per day after checkpoint
         };
     }
 };
@@ -184,7 +221,7 @@ public:
         pchMessageStart[1] = 0xe2;
         pchMessageStart[2] = 0xca;
         pchMessageStart[3] = 0xff;
-        vAlertPubKey = ParseHex("04517d8a699cb43d3938d7b24faaff7cda448ca4ea267723ba614784de661949bf632d6304316b244646dea079735b9a6fc4af804efb4752075b9fe2245e14e412");
+        vAlertPubKey = ParseHex("");
         nDefaultPort = 19999;
         nMaxTipAge = 0x7fffffff; // allow mining on top of old blocks for testnet
         nPruneAfterHeight = 1000;
